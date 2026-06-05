@@ -10,6 +10,7 @@ function Register() {
     email: "",
     mobile: "",
     bloodGroup: "",
+    city: "",
     password: "",
     confirmPassword: "",
   });
@@ -31,25 +32,30 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/register",
-        {
-          name: formData.name,
-          email: formData.email,
-          mobile: formData.mobile,
-          bloodGroup: formData.bloodGroup,
-          password: formData.password,
-        }
-      );
+  "http://localhost:5000/api/users/register",
+  {
+    name: formData.name,
+    email: formData.email,
+    mobile: formData.mobile,
+    bloodGroup: formData.bloodGroup,
+    city: formData.city,
+    password: formData.password,
+  }
+);
 
       alert("Registration Successful");
 
       navigate("/login");
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Registration Failed"
-      );
-    }
+  console.log("FULL ERROR:", error);
+
+  if (error.response) {
+    console.log("SERVER RESPONSE:", error.response.data);
+    alert(JSON.stringify(error.response.data));
+  } else {
+    alert(error.message);
+  }
+}
   };
 
   return (
@@ -110,6 +116,16 @@ function Register() {
             <option>AB+</option>
             <option>AB-</option>
           </select>
+          
+          <input
+  type="text"
+  name="city"
+  placeholder="City"
+  value={formData.city}
+  onChange={handleChange}
+  className="border p-4 rounded-xl"
+  required
+/>
 
           <input
             type="password"

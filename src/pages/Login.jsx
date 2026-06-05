@@ -23,42 +23,42 @@ function Login() {
 
   // Login Submit
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/users/login",
+      {
+        email: formData.email,
+        password: formData.password,
+      }
+    );
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/users/login",
-        formData
-      );
+    localStorage.setItem(
+      "token",
+      response.data.token
+    );
 
-      // Store Token
-      localStorage.setItem(
-        "token",
-        response.data.token
-      );
+    localStorage.setItem(
+      "user",
+      JSON.stringify(response.data.user)
+    );
 
-      // Store User Data
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-      );
+    alert("Login Successful");
 
-      alert("Login Successful");
+    navigate("/user-dashboard");
 
-      // Redirect Dashboard
-      navigate("/admin");
+  } catch (error) {
+  console.log("LOGIN ERROR:", error);
 
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Invalid Email or Password"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (error.response) {
+    console.log(error.response.data);
+    alert(JSON.stringify(error.response.data));
+  } else {
+    alert(error.message);
+  }
+}
+};
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6">
@@ -147,6 +147,17 @@ function Login() {
             >
               {loading ? "Logging In..." : "Login"}
             </button>
+            
+
+            <div className="text-center mt-5">
+  <button
+    type="button"
+    onClick={() => navigate("/admin-login")}
+    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl text-lg font-semibold transition"
+  >
+    Admin Login
+  </button>
+</div>
 
           </form>
 
