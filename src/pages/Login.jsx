@@ -27,26 +27,25 @@ function Login() {
 
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/users/login",
-      {
-        email: formData.email,
-        password: formData.password,
-      }
-    );
+  "http://localhost:5000/api/users/login",
+  {
+    email: formData.email,
+    password: formData.password,
+  }
+);
 
-    localStorage.setItem(
-      "token",
-      response.data.token
-    );
+localStorage.setItem(
+  "user",
+  JSON.stringify(response.data.user)
+);
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(response.data.user)
-    );
+localStorage.setItem(
+  "token",
+  response.data.token
+);
 
-    alert("Login Successful");
-
-    navigate("/user-dashboard");
+navigate("/");
+window.location.reload();
 
   } catch (error) {
   console.log("LOGIN ERROR:", error);

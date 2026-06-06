@@ -1,12 +1,34 @@
-// src/components/Navbar/Navbar.jsx
 
+import { UserCircle2 } from "lucide-react";
 import { useState } from "react";
 import { Menu, X, HeartPulse } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+// import { UserCircle2 } from "lucide-react";
+
+// import { useNavigate } from "react-router-dom";
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+   const [isOpen, setIsOpen] = useState(false);
 
+  // const navigate = useNavigate();
+
+  // const user = JSON.parse(
+  //   localStorage.getItem("user")
+  // );
+  const navigate = useNavigate();
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    navigate("/");
+    window.location.reload();
+  };
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
@@ -15,6 +37,7 @@ function Navbar() {
     { name: "Request Blood", path: "/request-blood" },
     { name: "Contact", path: "/contact" },
   ];
+  
 
   return (
     <nav className="w-full bg-white shadow-md sticky top-0 z-50">
@@ -52,18 +75,51 @@ function Navbar() {
 
           {/* Desktop Buttons */}
           <div className="hidden lg:flex items-center gap-4">
-            <Link to="/login">
-              <button className="px-5 py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition">
-                Login
-              </button>
-            </Link>
 
-            <Link to="/register">
-              <button className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-md">
-                Register
-              </button>
-            </Link>
-          </div>
+  {user ? (
+    <>
+      <div className="flex items-center gap-3">
+        
+        <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+          {user.name.charAt(0).toUpperCase()}
+        </div>
+
+        <div>
+          <p className="font-semibold text-gray-800">
+            {user.name}
+          </p>
+
+          <p className="text-xs text-gray-500">
+            {user.bloodGroup}
+          </p>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg"
+        >
+          Logout
+        </button>
+
+      </div>
+    </>
+  ) : (
+    <>
+      <Link to="/login">
+        <button className="px-5 py-2 border border-red-600 text-red-600 rounded-lg">
+          Login
+        </button>
+      </Link>
+
+      <Link to="/register">
+        <button className="px-5 py-2 bg-red-600 text-white rounded-lg">
+          Register
+        </button>
+      </Link>
+    </>
+  )}
+
+</div>
 
           {/* Mobile Menu Button */}
           <button
@@ -95,19 +151,38 @@ function Navbar() {
               </Link>
             ))}
 
-            <div className="flex flex-col gap-3 pt-4">
-              <Link to="/login">
-                <button className="w-full py-2 border border-red-600 text-red-600 rounded-lg">
-                  Login
-                </button>
-              </Link>
+            <div className="hidden lg:flex items-center gap-4">
 
-              <Link to="/register">
-                <button className="w-full py-2 bg-red-600 text-white rounded-lg">
-                  Register
-                </button>
-              </Link>
-            </div>
+  {user ? (
+    <>
+      <span className="font-semibold text-red-600">
+        Hello, {user.name}
+      </span>
+
+      <button
+        onClick={handleLogout}
+        className="px-5 py-2 bg-red-600 text-white rounded-lg"
+      >
+        Logout
+      </button>
+    </>
+  ) : (
+    <>
+      <Link to="/login">
+        <button className="px-5 py-2 border border-red-600 text-red-600 rounded-lg">
+          Login
+        </button>
+      </Link>
+
+      <Link to="/register">
+        <button className="px-5 py-2 bg-red-600 text-white rounded-lg">
+          Register
+        </button>
+      </Link>
+    </>
+  )}
+
+</div>
           </div>
         </div>
       )}
