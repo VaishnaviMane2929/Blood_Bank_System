@@ -11,91 +11,88 @@ import FindDonor from "./pages/FindDonor";
 import RequestBlood from "./pages/RequestBlood";
 
 import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import UserProtectedRoute from "./components/UserProtectedRoute";
 
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
 function App() {
-const location = useLocation();
+  const location = useLocation();
 
-const hideNavbarFooter =
-location.pathname === "/admin-login" ||
-location.pathname === "/admin-dashboard" ||
-location.pathname === "/user-dashboard";
+  const hideNavbarFooter =
+    location.pathname === "/admin-login" ||
+    location.pathname === "/admin-dashboard" ||
+    location.pathname === "/user-dashboard";
 
-return (
-<>
-{!hideNavbarFooter && <Navbar />}
+  return (
+    <>
+      {!hideNavbarFooter && <Navbar />}
 
+      <Routes>
+        {/* Public Routes */}
 
-  <Routes>
-    {/* Public Routes */}
-    <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
 
-    <Route
-      path="/login"
-      element={<Login />}
-    />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-    <Route
-      path="/register"
-      element={<Register />}
-    />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
 
-    <Route
-      path="/donate"
-      element={<DonateBlood />}
-    />
+        <Route
+          path="/donate"
+          element={<DonateBlood />}
+        />
 
-    <Route
-      path="/find-donor"
-      element={<FindDonor />}
-    />
+        <Route
+          path="/find-donor"
+          element={<FindDonor />}
+        />
 
-    <Route
-      path="/request-blood"
-      element={<RequestBlood />}
-    />
+        <Route
+          path="/request-blood"
+          element={<RequestBlood />}
+        />
 
-    {/* <Route
-  path="/profile"
-  element={<UserProfile />}
-/> */}
+        {/* Admin Login */}
 
-    {/* Admin Login */}
-    <Route
-      path="/admin-login"
-      element={<AdminLogin />}
-    />
+        <Route
+          path="/admin-login"
+          element={<AdminLogin />}
+        />
 
-    {/* User Dashboard */}
-    <Route
-      path="/user-dashboard"
-      element={
-        <UserProtectedRoute>
-          <UserDashboard />
-        </UserProtectedRoute>
-      }
-    />
+        {/* Admin Dashboard */}
 
-    {/* Admin Dashboard */}
-    <Route
-      path="/admin-dashboard"
-      element={
-        <AdminProtectedRoute>
-          <AdminDashboard />
-        </AdminProtectedRoute>
-      }
-    />
-  </Routes>
+        <Route
+          path="/admin-dashboard"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
 
-  {!hideNavbarFooter && <Footer />}
-</>
+        {/* User Dashboard */}
 
+        <Route
+          path="/user-dashboard"
+          element={
+            <UserProtectedRoute>
+              <UserDashboard />
+            </UserProtectedRoute>
+          }
+        />
+      </Routes>
 
-);
+      {!hideNavbarFooter && <Footer />}
+    </>
+  );
 }
 
 export default App;
