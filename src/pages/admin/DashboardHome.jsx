@@ -1,4 +1,34 @@
+import { useEffect, useState } from "react";
+import { getDashboardStats } from "../../api/dashboardApi";
+
 function DashboardHome() {
+
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalDonors: 0,
+    totalRequests: 0,
+    totalBloodUnits: 0
+  });
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+
+    try {
+
+      const data = await getDashboardStats();
+
+      setStats(data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
   return (
     <>
       <h1 className="text-4xl font-bold mb-8">
@@ -8,30 +38,34 @@ function DashboardHome() {
       <div className="grid lg:grid-cols-4 gap-6">
 
         <div className="bg-white p-6 rounded-xl shadow">
-          <h2>Total Donors</h2>
+          <h3>Total Users</h3>
+
           <p className="text-4xl font-bold text-red-600">
-            150
+            {stats.totalUsers}
           </p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow">
-          <h2>Blood Requests</h2>
+          <h3>Total Donors</h3>
+
           <p className="text-4xl font-bold text-red-600">
-            80
+            {stats.totalDonors}
           </p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow">
-          <h2>Blood Units</h2>
+          <h3>Blood Requests</h3>
+
           <p className="text-4xl font-bold text-red-600">
-            350
+            {stats.totalRequests}
           </p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow">
-          <h2>Total Users</h2>
+          <h3>Blood Units</h3>
+
           <p className="text-4xl font-bold text-red-600">
-            120
+            {stats.totalBloodUnits}
           </p>
         </div>
 

@@ -49,3 +49,10 @@ const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+const dashboardRoutes = require("./routes/dashboardRoutes");
+app.use("/api/users", userRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
+
+// app.use("/api/dashboard", dashboardRoutes);
