@@ -1,68 +1,124 @@
-import { Search, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  getDonations,
+  deleteDonation,
+} from "../../api/donationApi";
 
 function ManageDonors() {
+  const [donors, setDonors] = useState([]);
+
+  useEffect(() => {
+    loadDonors();
+  }, []);
+
+  const loadDonors = async () => {
+    try {
+      const res = await getDonations();
+
+      setDonors(res.donations);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (
+      window.confirm(
+        "Are you sure?"
+      )
+    ) {
+      await deleteDonation(id);
+
+      loadDonors();
+    }
+  };
+
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Manage Donors
-          </h1>
+      <div className="flex justify-between mb-6">
+        <h1 className="text-4xl font-bold">
+          Manage Donors
+        </h1>
 
-          <p className="text-gray-500 mt-2">
-            View and manage all registered donors
-          </p>
-        </div>
-
-        <button className="bg-red-600 text-white px-6 py-3 rounded-xl">
+        <button className="bg-red-600 text-white px-5 py-2 rounded-lg">
           Add Donor
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow p-6 mb-6">
-        <div className="relative">
-          <Search className="absolute left-4 top-4 text-gray-400" />
-
-          <input
-            type="text"
-            placeholder="Search donor..."
-            className="w-full border rounded-xl py-3 pl-12 pr-4"
-          />
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
-        <div className="bg-red-600 text-white p-5 flex items-center gap-3">
-          <Users />
-          <h2 className="font-semibold">
-            Registered Donors
-          </h2>
-        </div>
-
+      <div className="bg-white rounded-xl shadow overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-red-600 text-white">
             <tr>
-              <th className="p-4 text-left">Name</th>
-              <th className="p-4 text-left">Email</th>
-              <th className="p-4 text-left">Blood Group</th>
-              <th className="p-4 text-left">City</th>
-              <th className="p-4 text-left">Status</th>
+              <th className="p-4">
+                Name
+              </th>
+
+              <th className="p-4">
+                Blood Group
+              </th>
+
+              <th className="p-4">
+                Units
+              </th>
+
+              <th className="p-4">
+                City
+              </th>
+
+              <th className="p-4">
+                Contact
+              </th>
+
+              <th className="p-4">
+                Action
+              </th>
             </tr>
           </thead>
 
           <tbody>
-            <tr className="border-t">
-              <td className="p-4">Vaishnavi</td>
-              <td className="p-4">test@gmail.com</td>
-              <td className="p-4">AB+</td>
-              <td className="p-4">Pune</td>
+            {donors.map(
+              (donor) => (
+                <tr
+                  key={donor._id}
+                  className="border-b"
+                >
+                  <td className="p-4">
+                    {donor.donorName}
+                  </td>
 
-              <td className="p-4">
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                  Active
-                </span>
-              </td>
-            </tr>
+                  <td className="p-4">
+                    {
+                      donor.bloodGroup
+                    }
+                  </td>
+
+                  <td className="p-4">
+                    {donor.units}
+                  </td>
+
+                  <td className="p-4">
+                    {donor.city}
+                  </td>
+
+                  <td className="p-4">
+                    {donor.contact}
+                  </td>
+
+                  <td className="p-4">
+                    <button
+                      onClick={() =>
+                        handleDelete(
+                          donor._id
+                        )
+                      }
+                      className="bg-red-600 text-white px-3 py-2 rounded"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>

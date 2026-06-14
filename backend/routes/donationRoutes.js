@@ -8,7 +8,6 @@ const {
 } = require("../controllers/donationController");
 
 router.post("/", addDonation);
-
 router.get("/", getDonations);
 
 module.exports = router;

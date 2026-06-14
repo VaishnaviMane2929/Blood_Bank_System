@@ -17,6 +17,7 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import UserProtectedRoute from "./components/UserProtectedRoute";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLayout from "./pages/admin/AdminLayout";
 
 function App() {
   const location = useLocation();
@@ -69,14 +70,15 @@ function App() {
 
         {/* Admin Dashboard */}
 
-        <Route
-          path="/admin-dashboard"
-          element={
-            <AdminProtectedRoute>
-              <AdminDashboard />
-            </AdminProtectedRoute>
-          }
-        />
+       
+      <Route
+  path="/admin-dashboard"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout />
+    </AdminProtectedRoute>
+  }
+/>
 
         {/* User Dashboard */}
 
