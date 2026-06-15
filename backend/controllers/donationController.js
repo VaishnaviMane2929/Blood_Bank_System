@@ -1,23 +1,6 @@
 const Donation = require("../models/Donation");
 
-// GET ALL DONORS
-const getDonations = async (req, res) => {
-  try {
-    const donations = await Donation.find();
-
-    res.json({
-      success: true,
-      donations,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// ADD DONOR
+// Add Donor
 const addDonation = async (req, res) => {
   try {
     const donation = await Donation.create(req.body);
@@ -34,14 +17,32 @@ const addDonation = async (req, res) => {
   }
 };
 
-// UPDATE DONOR
+// Get All Donors
+const getDonations = async (req, res) => {
+  try {
+    const donations = await Donation.find();
+
+    res.json({
+      success: true,
+      donations,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Update Donor
 const updateDonation = async (req, res) => {
   try {
-    const donation = await Donation.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const donation =
+      await Donation.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
 
     res.json({
       success: true,
@@ -55,10 +56,12 @@ const updateDonation = async (req, res) => {
   }
 };
 
-// DELETE DONOR
+// Delete Donor
 const deleteDonation = async (req, res) => {
   try {
-    await Donation.findByIdAndDelete(req.params.id);
+    await Donation.findByIdAndDelete(
+      req.params.id
+    );
 
     res.json({
       success: true,
@@ -73,8 +76,8 @@ const deleteDonation = async (req, res) => {
 };
 
 module.exports = {
-  getDonations,
   addDonation,
+  getDonations,
   updateDonation,
   deleteDonation,
 };

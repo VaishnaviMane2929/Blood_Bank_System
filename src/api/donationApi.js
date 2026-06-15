@@ -1,18 +1,40 @@
 import axios from "axios";
 
-const API_URL =
+const API =
   "http://localhost:5000/api/donations";
 
 export const getDonations = async () => {
-  const response = await axios.get(API_URL);
-
-  return response.data;
-};
-
-export const deleteDonation = async (id) => {
-  return axios.delete(`${API_URL}/${id}`);
+  const res = await axios.get(API);
+  return res.data;
 };
 
 export const addDonation = async (data) => {
-  return axios.post(API_URL, data);
+  const res = await axios.post(
+    API,
+    data
+  );
+
+  return res.data;
+};
+
+export const updateDonation = async (
+  id,
+  data
+) => {
+  const res = await axios.put(
+    `${API}/${id}`,
+    data
+  );
+
+  return res.data;
+};
+
+export const deleteDonation = async (
+  id
+) => {
+  const res = await axios.delete(
+    `${API}/${id}`
+  );
+
+  return res.data;
 };
