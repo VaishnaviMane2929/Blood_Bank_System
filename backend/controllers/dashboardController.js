@@ -1,31 +1,36 @@
 const User = require("../models/User");
 const Donation = require("../models/Donation");
 const Request = require("../models/Request");
+const BloodStock = require("../models/BloodStock");
 
 const getDashboardStats = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
-    const totalDonors = await Donation.countDocuments();
-    const totalRequests = await Request.countDocuments();
+    const totalUsers =
+      await User.countDocuments();
 
-    const totalUnits = await Donation.aggregate([
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$units" }
-        }
-      }
-    ]);
+    const totalDonors =
+      await Donation.countDocuments();
+
+    const totalRequests =
+      await Request.countDocuments();
+
+    const stock =
+      await BloodStock.find();
+
+    const totalUnits = stock.reduce(
+      (total, item) =>
+        total + item.units,
+      0
+    );
 
     res.status(200).json({
       success: true,
-      totalUsers,
-      totalDonors,
-      totalRequests,
-      totalUnits:
-        totalUnits.length > 0
-          ? totalUnits[0].total
-          : 0,
+      stats: {
+        totalUsers,
+        totalDonors,
+        totalRequests,
+        totalUnits,
+      },
     });
   } catch (error) {
     res.status(500).json({
