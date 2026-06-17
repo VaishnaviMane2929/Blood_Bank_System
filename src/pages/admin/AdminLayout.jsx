@@ -20,36 +20,37 @@ import Campaigns from "./Campaigns";
 import UsersPage from "./Users";
 import Reports from "./Reports";
 
+
 function AdminLayout() {
   const [page, setPage] = useState("dashboard");
 
   const renderContent = () => {
-    switch (page) {
-      case "dashboard":
-        return <AdminDashboard />;
+  switch (page) {
+    case "dashboard":
+      return <AdminDashboard />;
 
-      case "donors":
-        return <ManageDonors />;
+    case "donors":
+      return <ManageDonors />;
 
-      case "requests":
-        return <BloodRequests />;
+    case "requests":
+      return <BloodRequests />;
 
-      case "stock":
-        return <BloodStock />;
+    case "stock":
+      return <BloodStock />;
 
-      case "campaigns":
-        return <Campaigns />;
+    case "campaigns":
+      return <Campaigns />;
 
-      case "users":
-        return <UsersPage />;
+    case "users":
+      return <UsersPage />;
 
-      case "reports":
-        return <Reports />;
+    case "reports":
+      return <Reports />;
 
-      default:
-        return <AdminDashboard />;
-    }
-  };
+    default:
+      return <AdminDashboard />;
+  }
+};
 
   return (
     <div className="flex h-screen bg-gray-100">

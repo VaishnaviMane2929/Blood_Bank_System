@@ -8,6 +8,9 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const donationRoutes = require("./routes/donationRoutes");
 
+const requestRoutes =
+require("./routes/requestRoutes");
+
 const app = express();
 
 // DATABASE
@@ -21,6 +24,10 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/donations", donationRoutes);
+app.use(
+  "/api/requests",
+  requestRoutes
+);
 
 app.get("/", (req, res) => {
   res.send("Blood Bank API Running");
