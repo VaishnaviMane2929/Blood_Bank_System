@@ -3,10 +3,15 @@ import {
   useState,
 } from "react";
 
+import RequestModal from "../../components/admin/RequestModal";
+
 import {
   getRequests,
+  addRequest,
+  updateRequest,
   deleteRequest,
 } from "../../api/requestApi";
+
 
 function BloodRequests() {
   const [requests, setRequests] =
@@ -38,6 +43,45 @@ function BloodRequests() {
         loadRequests();
       }
     };
+    const [isModalOpen, setIsModalOpen] =
+  useState(false);
+
+const [selectedRequest,
+  setSelectedRequest] =
+  useState(null);
+
+  const handleAdd = async (data) => {
+  await addRequest(data);
+
+  loadRequests();
+
+  setIsModalOpen(false);
+};
+
+const handleEdit = async (data) => {
+  await updateRequest(
+    selectedRequest._id,
+    data
+  );
+
+  loadRequests();
+
+  setIsModalOpen(false);
+};
+
+const handleApprove =
+  async (request) => {
+    await updateRequest(
+      request._id,
+      {
+        ...request,
+        status: "Approved",
+      }
+    );
+
+    loadRequests();
+  };
+  
 
   return (
     <>
@@ -46,9 +90,15 @@ function BloodRequests() {
           Blood Requests
         </h1>
 
-        <button className="bg-red-600 text-white px-5 py-2 rounded-lg">
-          Add Request
-        </button>
+        <button
+  onClick={() => {
+    setSelectedRequest(null);
+    setIsModalOpen(true);
+  }}
+  className="bg-red-600 text-white px-5 py-2 rounded-lg"
+>
+  Add Request
+</button>
       </div>
 
       <div className="bg-white rounded-xl shadow overflow-hidden">
@@ -130,22 +180,40 @@ function BloodRequests() {
 
                   <td className="p-4">
 
-                    <button className="bg-green-600 text-white px-3 py-2 rounded mr-2">
-                      Approve
-                    </button>
+  <button
+    onClick={() =>
+      handleApprove(request)
+    }
+    className="bg-green-600 text-white px-3 py-2 rounded mr-2"
+  >
+    Approve
+  </button>
 
-                    <button
-                      onClick={() =>
-                        handleDelete(
-                          request._id
-                        )
-                      }
-                      className="bg-red-600 text-white px-3 py-2 rounded"
-                    >
-                      Delete
-                    </button>
+  <button
+    onClick={() => {
+      setSelectedRequest(
+        request
+      );
 
-                  </td>
+      setIsModalOpen(true);
+    }}
+    className="bg-blue-600 text-white px-3 py-2 rounded mr-2"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() =>
+      handleDelete(
+        request._id
+      )
+    }
+    className="bg-red-600 text-white px-3 py-2 rounded"
+  >
+    Delete
+  </button>
+
+</td>
 
                 </tr>
               )
@@ -156,6 +224,21 @@ function BloodRequests() {
         </table>
 
       </div>
+      {isModalOpen && (
+  <RequestModal
+    initialData={
+      selectedRequest
+    }
+    onClose={() =>
+      setIsModalOpen(false)
+    }
+    onSave={
+      selectedRequest
+        ? handleEdit
+        : handleAdd
+    }
+  />
+)}
     </>
   );
 }
