@@ -2,12 +2,9 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// REGISTER USER
-
+// REGISTER
 const registerUser = async (req, res) => {
   try {
-    console.log("REGISTER DATA:", req.body);
-
     const {
       name,
       email,
@@ -16,20 +13,6 @@ const registerUser = async (req, res) => {
       bloodGroup,
       city,
     } = req.body;
-
-    if (
-      !name ||
-      !email ||
-      !mobile ||
-      !password ||
-      !bloodGroup ||
-      !city
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
 
     const userExists = await User.findOne({ email });
 
@@ -40,11 +23,9 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const salt = await bcrypt.genSalt(10);
-
     const hashedPassword = await bcrypt.hash(
       password,
-      salt
+      10
     );
 
     const user = await User.create({
@@ -64,14 +45,10 @@ const registerUser = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "User Registered Successfully",
       token,
       user,
     });
-
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       success: false,
       message: error.message,
@@ -79,20 +56,15 @@ const registerUser = async (req, res) => {
   }
 };
 
-// LOGIN USER
-
+// LOGIN
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } =
+      req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and Password are required",
-      });
-    }
-
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      email,
+    });
 
     if (!user) {
       return res.status(400).json({
@@ -101,12 +73,13 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const match =
+      await bcrypt.compare(
+        password,
+        user.password
+      );
 
-    if (!isMatch) {
+    if (!match) {
       return res.status(400).json({
         success: false,
         message: "Invalid Password",
@@ -119,19 +92,85 @@ const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.status(200).json({
+    res.json({
       success: true,
-      message: "Login Successful",
       token,
       user,
     });
-
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: error.message,
+    });
+  }
+};
+
+// GET ALL USERS
+const getUsers = async (req, res) => {
+  try {
+    const users =
+      await User.find().sort({
+        createdAt: -1,
+      });
+
+    res.json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// UPDATE USER
+const updateUser = async (
+  req,
+  res
+) => {
+  try {
+    const user =
+      await User.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+
+    res.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// DELETE USER
+const deleteUser = async (
+  req,
+  res
+) => {
+  try {
+    await User.findByIdAndDelete(
+      req.params.id
+    );
+
+    res.json({
+      success: true,
+      message:
+        "User Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
@@ -139,4 +178,7 @@ const loginUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getUsers,
+  updateUser,
+  deleteUser,
 };
