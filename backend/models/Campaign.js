@@ -17,9 +17,9 @@ const campaignSchema = new mongoose.Schema(
       required: true,
     },
 
-    status: {
+    description: {
       type: String,
-      default: "Active",
+      required: true,
     },
   },
   {

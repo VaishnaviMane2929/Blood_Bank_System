@@ -1,40 +1,196 @@
-function BloodStock() {
-  return (
-    <div className="p-8">
+import {
+  useEffect,
+  useState,
+} from "react";
 
-      <h1 className="text-3xl font-bold mb-6">
+import {
+  getStocks,
+  addStock,
+  updateStock,
+  deleteStock,
+} from "../../api/bloodStockApi";
+
+function BloodStock() {
+  const [stocks, setStocks] =
+    useState([]);
+
+  const [formData, setFormData] =
+    useState({
+      bloodGroup: "",
+      units: "",
+    });
+
+  const [editingId, setEditingId] =
+    useState(null);
+
+  useEffect(() => {
+    loadStocks();
+  }, []);
+
+  const loadStocks = async () => {
+    const res = await getStocks();
+
+    setStocks(res.stocks);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (editingId) {
+      await updateStock(
+        editingId,
+        formData
+      );
+    } else {
+      await addStock(formData);
+    }
+
+    setFormData({
+      bloodGroup: "",
+      units: "",
+    });
+
+    setEditingId(null);
+
+    loadStocks();
+  };
+
+  const handleEdit = (stock) => {
+    setEditingId(stock._id);
+
+    setFormData({
+      bloodGroup:
+        stock.bloodGroup,
+      units: stock.units,
+    });
+  };
+
+  const handleDelete = async (
+    id
+  ) => {
+    if (
+      window.confirm(
+        "Delete Blood Stock?"
+      )
+    ) {
+      await deleteStock(id);
+
+      loadStocks();
+    }
+  };
+
+  return (
+    <>
+      <h1 className="text-4xl font-bold mb-6">
         Blood Stock
       </h1>
 
-      <table className="w-full bg-white shadow">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow mb-6"
+      >
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Blood Group"
+            value={
+              formData.bloodGroup
+            }
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                bloodGroup:
+                  e.target.value,
+              })
+            }
+            className="border p-3 rounded"
+          />
 
-        <thead>
-          <tr className="bg-red-600 text-white">
-            <th>Blood Group</th>
-            <th>Units</th>
-          </tr>
-        </thead>
+          <input
+            type="number"
+            placeholder="Units"
+            value={formData.units}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                units:
+                  e.target.value,
+              })
+            }
+            className="border p-3 rounded"
+          />
+        </div>
 
-        <tbody>
-          <tr>
-            <td className="text-center">A+</td>
-            <td className="text-center">50</td>
-          </tr>
+        <button className="mt-4 bg-red-600 text-white px-6 py-2 rounded">
+          {editingId
+            ? "Update Stock"
+            : "Add Stock"}
+        </button>
+      </form>
 
-          <tr>
-            <td className="text-center">B+</td>
-            <td className="text-center">40</td>
-          </tr>
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-red-600 text-white">
+            <tr>
+              <th className="p-4">
+                Blood Group
+              </th>
 
-          <tr>
-            <td className="text-center">O+</td>
-            <td className="text-center">60</td>
-          </tr>
-        </tbody>
+              <th className="p-4">
+                Units
+              </th>
 
-      </table>
+              <th className="p-4">
+                Actions
+              </th>
+            </tr>
+          </thead>
 
-    </div>
+          <tbody>
+            {stocks.map((stock) => (
+              <tr
+                key={stock._id}
+                className="border-b"
+              >
+                <td className="p-4">
+                  {
+                    stock.bloodGroup
+                  }
+                </td>
+
+                <td className="p-4">
+                  {stock.units}
+                </td>
+
+                <td className="p-4">
+                  <button
+                    onClick={() =>
+                      handleEdit(
+                        stock
+                      )
+                    }
+                    className="bg-blue-600 text-white px-3 py-2 rounded mr-2"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      handleDelete(
+                        stock._id
+                      )
+                    }
+                    className="bg-red-600 text-white px-3 py-2 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 

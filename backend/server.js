@@ -11,6 +11,13 @@ const donationRoutes = require("./routes/donationRoutes");
 const requestRoutes =
 require("./routes/requestRoutes");
 
+const bloodStockRoutes = require(
+  "./routes/bloodStockRoutes"
+);
+const campaignRoutes = require(
+  "./routes/campaignRoutes"
+);
+
 const app = express();
 
 // DATABASE
@@ -27,6 +34,15 @@ app.use("/api/donations", donationRoutes);
 app.use(
   "/api/requests",
   requestRoutes
+);
+
+app.use(
+  "/api/blood-stock",
+  bloodStockRoutes
+);
+app.use(
+  "/api/campaigns",
+  campaignRoutes
 );
 
 app.get("/", (req, res) => {
