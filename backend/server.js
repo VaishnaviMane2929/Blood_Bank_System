@@ -17,6 +17,8 @@ const bloodStockRoutes = require(
 const campaignRoutes = require(
   "./routes/campaignRoutes"
 );
+const reportRoutes =
+require("./routes/reportRoutes");
 
 const app = express();
 
@@ -43,6 +45,10 @@ app.use(
 app.use(
   "/api/campaigns",
   campaignRoutes
+);
+app.use(
+"/api/reports",
+reportRoutes
 );
 
 app.get("/", (req, res) => {
