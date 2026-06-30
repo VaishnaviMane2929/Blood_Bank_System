@@ -3,7 +3,10 @@ const Donation = require("../models/Donation");
 const Request = require("../models/Request");
 const BloodStock = require("../models/BloodStock");
 
-const getDashboardStats = async (req, res) => {
+const getDashboardStats = async (
+  req,
+  res
+) => {
   try {
     const totalUsers =
       await User.countDocuments();
@@ -18,23 +21,61 @@ const getDashboardStats = async (req, res) => {
       await BloodStock.find();
 
     const totalUnits = stock.reduce(
-      (total, item) =>
-        total + item.units,
+      (sum, item) => sum + item.units,
       0
     );
 
-    res.status(200).json({
+    // const recentDonations =
+    //   await Donation.find()
+    //     .sort({
+    //       createdAt: -1,
+    //     })
+    //     .limit(5);
+
+    // const recentRequests =
+    //   await Request.find()
+    //     .sort({
+    //       createdAt: -1,
+    //     })
+    //     .limit(5);
+
+    const recentDonors = await Donation
+  .find()
+  .sort({ createdAt: -1 })
+  .limit(5);
+
+const recentRequests = await Request
+  .find()
+  .sort({ createdAt: -1 })
+  .limit(5);
+
+
+
+    const lowStock =
+      await BloodStock.find({
+        units: { $lt: 10 },
+      });
+
+    res.json({
       success: true,
+
       stats: {
         totalUsers,
         totalDonors,
         totalRequests,
         totalUnits,
       },
+
+      bloodStock: stock,
+
+      recentDonors,
+
+      recentRequests,
+
+      lowStock,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

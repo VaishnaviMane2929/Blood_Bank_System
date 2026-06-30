@@ -22,6 +22,9 @@ function Reports() {
 
   const [report,
   setReport] = useState({
+    totalUsers: 0,
+    totalDonors: 0,
+    totalRequests: 0,
     bloodGroups: [],
     monthlyRequests: [],
     recentDonations: [],
@@ -33,10 +36,16 @@ function Reports() {
 
   const loadReports =
   async () => {
-    const res =
-    await getReports();
+    try {
 
-    setReport(res);
+      const res =
+      await getReports();
+
+      setReport(res);
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const COLORS = [
@@ -45,29 +54,65 @@ function Reports() {
     "#f87171",
     "#fca5a5",
     "#fecaca",
+    "#991b1b",
   ];
 
   return (
-    <>
-      <div className="mb-8">
+    <div>
 
+      <div className="mb-8">
         <h1 className="text-4xl font-bold">
           Reports & Analytics
         </h1>
 
         <p className="text-gray-500">
-          Dynamic MongoDB Reports
+          Blood Bank Performance Overview
         </p>
+      </div>
+
+      {/* Stats */}
+
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
+
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h3 className="text-gray-500">
+            Total Users
+          </h3>
+
+          <p className="text-4xl font-bold text-blue-600 mt-2">
+            {report.totalUsers}
+          </p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h3 className="text-gray-500">
+            Total Donors
+          </h3>
+
+          <p className="text-4xl font-bold text-green-600 mt-2">
+            {report.totalDonors}
+          </p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h3 className="text-gray-500">
+            Total Requests
+          </h3>
+
+          <p className="text-4xl font-bold text-red-600 mt-2">
+            {report.totalRequests}
+          </p>
+        </div>
 
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      {/* Charts */}
 
-        {/* Requests Chart */}
+      <div className="grid lg:grid-cols-2 gap-6">
 
         <div className="bg-white p-6 rounded-2xl shadow">
 
-          <h2 className="font-semibold mb-4">
+          <h2 className="font-semibold text-xl mb-4">
             Monthly Requests
           </h2>
 
@@ -97,12 +142,10 @@ function Reports() {
 
         </div>
 
-        {/* Blood Stock */}
-
         <div className="bg-white p-6 rounded-2xl shadow">
 
-          <h2 className="font-semibold mb-4">
-            Blood Distribution
+          <h2 className="font-semibold text-xl mb-4">
+            Blood Group Distribution
           </h2>
 
           <ResponsiveContainer
@@ -122,6 +165,7 @@ function Reports() {
 
                 {report.bloodGroups.map(
                 (entry,index) => (
+
                   <Cell
                   key={index}
                   fill={
@@ -131,8 +175,8 @@ function Reports() {
                     ]
                   }
                   />
-                ))}
 
+                ))}
               </Pie>
 
               <Tooltip />
@@ -147,15 +191,15 @@ function Reports() {
 
       {/* Recent Donations */}
 
-      <div className="bg-white mt-8 p-6 rounded-2xl shadow">
+      <div className="bg-white mt-8 rounded-2xl shadow p-6">
 
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-2xl font-bold mb-4">
           Recent Donations
         </h2>
 
         <table className="w-full">
 
-          <thead className="bg-gray-100">
+          <thead className="bg-red-600 text-white">
 
             <tr>
               <th className="p-3">
@@ -179,7 +223,7 @@ function Reports() {
 
           <tbody>
 
-            {report.recentDonations?.map(
+            {report.recentDonations.map(
             (donor) => (
 
               <tr
@@ -211,7 +255,8 @@ function Reports() {
         </table>
 
       </div>
-    </>
+
+    </div>
   );
 }
 

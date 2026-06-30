@@ -7,6 +7,18 @@ import {
   Droplets,
 } from "lucide-react";
 
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+
 function AdminDashboard() {
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -16,16 +28,14 @@ function AdminDashboard() {
   });
 
   useEffect(() => {
-    fetchStats();
+    loadDashboard();
   }, []);
 
-  const fetchStats = async () => {
+  const loadDashboard = async () => {
     try {
       const res = await axios.get(
         "http://localhost:5000/api/dashboard"
       );
-
-      console.log("Dashboard Data:", res.data);
 
       setStats(res.data.stats);
     } catch (error) {
@@ -35,48 +45,76 @@ function AdminDashboard() {
 
   const cards = [
     {
-      title: "Total Users",
+      title: "Users",
       value: stats.totalUsers,
       icon: <Users size={28} />,
-      color: "bg-blue-100 text-blue-600",
+      color: "text-blue-600",
     },
     {
-      title: "Total Donors",
+      title: "Donors",
       value: stats.totalDonors,
       icon: <Heart size={28} />,
-      color: "bg-green-100 text-green-600",
+      color: "text-green-600",
     },
     {
-      title: "Blood Requests",
+      title: "Requests",
       value: stats.totalRequests,
       icon: <FileText size={28} />,
-      color: "bg-yellow-100 text-yellow-600",
+      color: "text-yellow-600",
     },
     {
       title: "Blood Units",
       value: stats.totalUnits,
       icon: <Droplets size={28} />,
-      color: "bg-red-100 text-red-600",
+      color: "text-red-600",
     },
   ];
 
+  const chartData = [
+    {
+      name: "Users",
+      value: stats.totalUsers,
+    },
+    {
+      name: "Donors",
+      value: stats.totalDonors,
+    },
+    {
+      name: "Requests",
+      value: stats.totalRequests,
+    },
+    {
+      name: "Units",
+      value: stats.totalUnits,
+    },
+  ];
+
+  const COLORS = [
+    "#2563eb",
+    "#16a34a",
+    "#ca8a04",
+    "#dc2626",
+  ];
+
   return (
-    <>
+    <div>
       <div className="mb-8">
-        <h1 className="text-5xl font-bold">
+        <h1 className="text-4xl font-bold">
           Dashboard Overview
         </h1>
 
-        <p className="text-gray-500 mt-2 text-lg">
+        <p className="text-gray-500 mt-2">
           Blood Bank Management System
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
+      {/* Stats Cards */}
+
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-8">
         {cards.map((card, index) => (
           <div
             key={index}
-            className="bg-white rounded-3xl p-6 shadow hover:shadow-lg transition"
+            className="bg-white p-6 rounded-2xl shadow"
           >
             <div className="flex justify-between items-center">
               <div>
@@ -89,9 +127,7 @@ function AdminDashboard() {
                 </h2>
               </div>
 
-              <div
-                className={`p-4 rounded-2xl ${card.color}`}
-              >
+              <div className={card.color}>
                 {card.icon}
               </div>
             </div>
@@ -99,36 +135,93 @@ function AdminDashboard() {
         ))}
       </div>
 
-      {/* Recent Activity */}
+      {/* Charts */}
 
-      <div className="bg-white rounded-3xl shadow p-6 mt-8">
-        <h2 className="text-2xl font-bold mb-4">
-          System Summary
+      <div className="grid lg:grid-cols-2 gap-6">
+
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-xl font-bold mb-4">
+            System Statistics
+          </h2>
+
+          <ResponsiveContainer
+            width="100%"
+            height={300}
+          >
+            <BarChart data={chartData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+
+              <Bar
+                dataKey="value"
+                fill="#dc2626"
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-xl font-bold mb-4">
+            Distribution
+          </h2>
+
+          <ResponsiveContainer
+            width="100%"
+            height={300}
+          >
+            <PieChart>
+              <Pie
+                data={chartData}
+                dataKey="value"
+                outerRadius={100}
+                label
+              >
+                {chartData.map(
+                  (entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={
+                        COLORS[index]
+                      }
+                    />
+                  )
+                )}
+              </Pie>
+
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+      </div>
+
+      {/* Activity Section */}
+
+      <div className="bg-white mt-8 rounded-2xl shadow p-6">
+        <h2 className="text-xl font-bold mb-4">
+          Recent Activity
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="border rounded-xl p-4">
-            <h3 className="font-semibold text-gray-600">
-              Registered Users
-            </h3>
-
-            <p className="text-3xl font-bold text-blue-600 mt-2">
-              {stats.totalUsers}
-            </p>
+        <div className="space-y-3">
+          <div className="border-b pb-3">
+            New donor registered
           </div>
 
-          <div className="border rounded-xl p-4">
-            <h3 className="font-semibold text-gray-600">
-              Available Blood Units
-            </h3>
+          <div className="border-b pb-3">
+            Blood request created
+          </div>
 
-            <p className="text-3xl font-bold text-red-600 mt-2">
-              {stats.totalUnits}
-            </p>
+          <div className="border-b pb-3">
+            Stock updated
+          </div>
+
+          <div>
+            New user account created
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

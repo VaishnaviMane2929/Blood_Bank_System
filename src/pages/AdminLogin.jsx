@@ -1,73 +1,88 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { adminLogin } from "../api/adminApi";
 
 function AdminLogin() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] =
+    useState({
+      email: "",
+      password: "",
+    });
 
-  const handleAdminLogin = (e) => {
-    e.preventDefault();
-
-    if (
-      email === "admin@gmail.com" &&
-      password === "Admin123"
-    ) {
-      localStorage.setItem("admin", "true");
-
-      alert("Admin Login Successful");
-
-      navigate("/admin-dashboard");
-    } else {
-      alert("Invalid Admin Credentials");
-    }
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]:
+        e.target.value,
+    });
   };
 
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await adminLogin(formData);
+
+console.log("LOGIN RESPONSE:", res);
+
+  if (res.success) {
+  localStorage.setItem(
+    "adminInfo",
+    JSON.stringify(res.admin)
+  );
+
+  localStorage.setItem(
+    "adminToken",
+    res.token
+  );
+
+  navigate("/admin-dashboard");
+}
+
+    navigate("/admin-dashboard");
+
+  } catch (error) {
+    alert("Invalid Credentials");
+  }
+};
+
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
 
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-[500px]">
-
-        <h1 className="text-3xl font-bold text-center text-red-600 mb-8">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-2xl shadow w-[400px]"
+      >
+        <h1 className="text-3xl font-bold text-center mb-6">
           Admin Login
         </h1>
 
-        <form
-          onSubmit={handleAdminLogin}
-          className="space-y-5"
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          className="w-full border p-3 rounded-lg mb-4"
+          onChange={handleChange}
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          className="w-full border p-3 rounded-lg mb-4"
+          onChange={handleChange}
+        />
+
+        <button
+          className="w-full bg-red-600 text-white py-3 rounded-lg"
         >
+          Login
+        </button>
 
-          <input
-            type="email"
-            placeholder="Admin Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            className="w-full border p-4 rounded-xl"
-          />
-
-          <input
-            type="password"
-            placeholder="Admin Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-            className="w-full border p-4 rounded-xl"
-          />
-
-          <button
-            className="w-full bg-red-600 text-white py-4 rounded-xl"
-          >
-            Login
-          </button>
-
-        </form>
-
-      </div>
-
+      </form>
     </div>
   );
 }

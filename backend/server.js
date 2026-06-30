@@ -20,6 +20,9 @@ const campaignRoutes = require(
 const reportRoutes =
 require("./routes/reportRoutes");
 
+const adminRoutes =
+require("./routes/adminRoutes");
+
 const app = express();
 
 // DATABASE
@@ -49,6 +52,11 @@ app.use(
 app.use(
 "/api/reports",
 reportRoutes
+);
+
+app.use(
+  "/api/admin",
+  adminRoutes
 );
 
 app.get("/", (req, res) => {

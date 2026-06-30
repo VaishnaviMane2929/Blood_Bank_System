@@ -19,10 +19,20 @@ import BloodStock from "./BloodStock";
 import Campaigns from "./Campaigns";
 import UsersPage from "./Users";
 import Reports from "./Reports";
+import Header from "../../components/admin/Header";
+import AdminProfile from "./AdminProfile";
 
 
 function AdminLayout() {
   const [page, setPage] = useState("dashboard");
+  const handleLogout = () => {
+  localStorage.removeItem(
+    "adminToken"
+  );
+
+  window.location.href =
+    "/admin-login";
+};
 
   const renderContent = () => {
   switch (page) {
@@ -46,6 +56,9 @@ function AdminLayout() {
 
     case "reports":
       return <Reports />;
+
+      case "profile":
+  return <AdminProfile />;
 
     default:
       return <AdminDashboard />;
@@ -154,19 +167,22 @@ function AdminLayout() {
         </div>
 
         <div className="p-4 border-t">
-          <button className="flex items-center gap-2 text-red-600">
-            <LogOut size={18} />
-            Logout
-          </button>
+          <button
+  onClick={handleLogout}
+  className="flex items-center gap-2 text-red-600"
+>
+  <LogOut size={18} />
+  Logout
+</button>
         </div>
       </div>
 
       {/* Main Area */}
 
       <div className="flex-1 flex flex-col">
-        {/* Header */}
+       <Header setPage={setPage} />
 
-        <div className="bg-white px-8 py-4 shadow flex justify-between items-center">
+        {/* <div className="bg-white px-8 py-4 shadow flex justify-between items-center">
           <div className="relative w-96">
             <Search
               className="absolute left-4 top-3 text-gray-400"
@@ -203,7 +219,7 @@ function AdminLayout() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Page Content */}
 
