@@ -26,24 +26,19 @@ function AdminLogin() {
   try {
     const res = await adminLogin(formData);
 
-console.log("LOGIN RESPONSE:", res);
+    if (res.success) {
+      localStorage.setItem(
+        "adminInfo",
+        JSON.stringify(res.admin)
+      );
 
-  if (res.success) {
-  localStorage.setItem(
-    "adminInfo",
-    JSON.stringify(res.admin)
-  );
+      localStorage.setItem(
+        "adminToken",
+        res.token
+      );
 
-  localStorage.setItem(
-    "adminToken",
-    res.token
-  );
-
-  navigate("/admin-dashboard");
-}
-
-    navigate("/admin-dashboard");
-
+      navigate("/admin-dashboard");
+    }
   } catch (error) {
     alert("Invalid Credentials");
   }

@@ -23,10 +23,11 @@ const admin =
   console.log("ADMIN DATA:", admin);
 
   const handleLogout = () => {
-    // localStorage.removeItem("adminInfo");
-    // localStorage.removeItem("adminToken");
-    navigate("/admin-login");
-  };
+  localStorage.removeItem("adminInfo");
+  localStorage.removeItem("adminToken");
+
+  navigate("/admin-login");
+};
 
   return (
     <div className="bg-white shadow-sm border rounded-2xl px-6 py-4 mb-6 flex justify-between items-center">

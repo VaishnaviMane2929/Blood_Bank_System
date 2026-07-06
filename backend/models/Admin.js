@@ -1,13 +1,48 @@
 const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  role: {
-    type: String,
-    default: "Administrator",
-  },
+
+name:{
+type:String,
+required:true,
+},
+
+email:{
+type:String,
+required:true,
+unique:true,
+},
+
+password:{
+type:String,
+required:true,
+},
+
+role:{
+type:String,
+default:"Super Admin",
+},
+
+mobile:{
+type:String,
+default:"",
+},
+
+city:{
+type:String,
+default:"",
+},
+
+profileImage:{
+type:String,
+default:"",
+}
+
+},{
+timestamps:true
 });
 
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports=mongoose.model(
+"Admin",
+adminSchema
+);

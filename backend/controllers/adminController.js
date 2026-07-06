@@ -2,6 +2,86 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
 
+const getProfile = async (req, res) => {
+
+  try {
+
+    const admin = await Admin
+      .findById(req.adminId)
+      .select("-password");
+
+    res.json({
+      success: true,
+      admin,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+
+  }
+
+};
+
+const updateProfile = async (req, res) => {
+
+  try {
+
+    const {
+      name,
+      mobile,
+      city,
+    } = req.body;
+
+    const admin = await Admin.findById(req.adminId);
+
+    if (!admin) {
+
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+
+    }
+
+    admin.name = name;
+    admin.mobile = mobile;
+    admin.city = city;
+
+    await admin.save();
+
+    res.json({
+
+      success: true,
+
+      message: "Profile Updated",
+
+      admin: {
+        _id: admin._id,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role,
+        mobile: admin.mobile,
+        city: admin.city,
+        createdAt: admin.createdAt,
+      },
+
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+
+  }
+
+};
+
 const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -62,4 +142,6 @@ const loginAdmin = async (req, res) => {
 
 module.exports = {
   loginAdmin,
+  getProfile,
+  updateProfile,
 };
