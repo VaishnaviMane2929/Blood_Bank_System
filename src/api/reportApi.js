@@ -1,12 +1,16 @@
 import axios from "axios";
 
-const API =
-"http://localhost:5000/api/reports";
+const API_URL = "http://localhost:5000/api";
 
-export const getReports =
-async () => {
-const res =
-await axios.get(API);
+export const getReports = async () => {
+  const response = await axios.get(
+    `${API_URL}/reports`
+  );
 
-return res.data;
+  console.log(
+    "REPORT API RESPONSE:",
+    response.data
+  );
+
+  return response.data;
 };

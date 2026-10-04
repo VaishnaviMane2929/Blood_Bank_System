@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import DonateBlood from "./pages/DonateBlood";
 import FindDonor from "./pages/FindDonor";
 import RequestBlood from "./pages/RequestBlood";
+import Contact from "./pages/Contact";
 
 import AdminLogin from "./pages/AdminLogin";
 import UserDashboard from "./pages/UserDashboard";
@@ -18,6 +19,8 @@ import UserProtectedRoute from "./components/UserProtectedRoute";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLayout from "./pages/admin/AdminLayout";
+
+import About from "./pages/About";
 
 function App() {
   const location = useLocation();
@@ -60,6 +63,10 @@ function App() {
           path="/request-blood"
           element={<RequestBlood />}
         />
+
+        <Route path="/contact" element={<Contact />} />
+
+        <Route path="/about" element={<About />} />
 
         {/* Admin Login */}
 

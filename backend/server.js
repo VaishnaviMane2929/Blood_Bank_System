@@ -28,6 +28,10 @@ require("./routes/adminRoutes");
 
 const app = express();
 
+const contactRoutes = require("./routes/contactRoutes");
+
+const aboutRoutes = require("./routes/aboutRoutes");
+
 // DATABASE
 connectDB();
 
@@ -44,6 +48,10 @@ app.use(
   requestRoutes
 );
 
+app.use("/api/contacts", contactRoutes);
+
+app.use("/api/about", aboutRoutes);
+
 app.use(
   "/api/blood-stock",
   bloodStockRoutes
@@ -57,6 +65,8 @@ app.use(
 "/api/reports",
 reportRoutes
 );
+
+
 
 app.use(
   "/api/admin",
